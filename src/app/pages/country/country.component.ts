@@ -1,7 +1,7 @@
-import {HttpClient, HttpErrorResponse} from '@angular/common/http';
+import {HttpErrorResponse} from '@angular/common/http';
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, ParamMap, Router} from '@angular/router';
-import { Olympic } from '../../models/olympic.model';
+import { DataService } from '../../services/data.service';
 
 
 @Component({
@@ -10,7 +10,6 @@ import { Olympic } from '../../models/olympic.model';
   styleUrls: ['./country.component.scss']
 })
 export class CountryComponent implements OnInit {
-  private olympicUrl = './assets/mock/olympic.json';
   public titlePage: string = '';
   public totalEntries: number = 0;
   public totalMedals: number = 0;
@@ -19,13 +18,12 @@ export class CountryComponent implements OnInit {
   public years: string[] = [];
   public medals: number[] = [];
 
-  constructor(private route: ActivatedRoute, private router: Router, private http: HttpClient) {
-  }
+constructor(private route: ActivatedRoute, private router: Router, private dataService: DataService) {}
 
   ngOnInit() {
     let countryName: string | null = null;
     this.route.paramMap.subscribe((param: ParamMap) => countryName = param.get('countryName'));
-    this.http.get<Olympic[]>(this.olympicUrl).subscribe(
+    this.dataService.getOlympics().subscribe(
       (data) => {
         if (data && data.length > 0) {
           const selectedCountry = data.find(country => country.country === countryName);

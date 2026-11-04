@@ -1,7 +1,7 @@
-import {HttpClient, HttpErrorResponse} from '@angular/common/http';
+import {HttpErrorResponse} from '@angular/common/http';
 import {Component, OnInit} from '@angular/core';
 import { Router } from '@angular/router';
-import { Olympic } from '../../models/olympic.model';
+import { DataService } from '../../services/data.service';
 
 @Component({
   selector: 'app-home',
@@ -9,7 +9,6 @@ import { Olympic } from '../../models/olympic.model';
   styleUrls: ['./home.component.scss'],
 })
 export class HomeComponent implements OnInit {
-  private olympicUrl = './assets/mock/olympic.json';
   public totalCountries: number = 0;
   public totalJOs: number = 0;
   public error!:string;
@@ -17,10 +16,10 @@ export class HomeComponent implements OnInit {
   public countries: string[] = [];
   public medals: number[] = [];
 
-  constructor(private router: Router, private http:HttpClient) { }
+  constructor(private router: Router, private dataService: DataService) { }
 
   ngOnInit() {
-    this.http.get<Olympic[]>(this.olympicUrl).subscribe(
+    this.dataService.getOlympics().subscribe(
       (data) => {
         if (data && data.length > 0) {
           this.totalJOs = new Set(data.flatMap(country => country.participations.map(p => p.year))).size;
