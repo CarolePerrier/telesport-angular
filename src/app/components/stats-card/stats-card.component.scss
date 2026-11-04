@@ -1,0 +1,16 @@
+.stats-card {
+  padding: 10px;
+  border: 1px solid #0b868f;
+  border-radius: 10px;
+  text-align: center;
+  color: gray;
+}
+
+.stats-card p {
+  margin: 0;
+}
+
+.stats-card p:last-child {
+  font-weight: bold;
+  color: black;
+}

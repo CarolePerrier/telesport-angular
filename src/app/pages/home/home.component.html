@@ -6,15 +6,9 @@
       <div>{{ titlePage }}</div>
     </div>
     <div class="split">
-      <div>
-        <p>Number of countries</p>
-        <p>{{ totalCountries }}</p>
-      </div>
-      <div>
-        <p>Number of JOs</p>
-        <p>{{ totalJOs }}</p>
-      </div>
+      <app-stats-card [label]="'Number of countries'" [value]="totalCountries"></app-stats-card>
+      <app-stats-card [label]="'Number of JOs'" [value]="totalJOs"></app-stats-card>
     </div>
   </div>
-  <canvas id="DashboardPieChart">{{ pieChart }}</canvas>
+  <app-medal-chart type="pie" [labels]="countries" [values]="medals" (countrySelected)="onCountrySelected($event)"></app-medal-chart>
 </div>
