@@ -1,85 +1,77 @@
-# Architecture de l'application TéléSport
+# Architecture de l’application TéléSport
 
 ## 1. Présentation
 
-TéléSport est une application Angular permettant de consulter les résultats des Jeux olympiques.
-
-Elle propose :
-
-* Un tableau de bord présentant le nombre de pays participants, le nombre d'éditions des Jeux olympiques et la répartition des médailles par pays.
-* Une page détaillée pour chaque pays, présentant ses participations, son nombre total de médailles, son nombre total d'athlètes et l'évolution de ses médailles au fil des éditions.
+TéléSport est une application Angular qui permet de comparer les totaux de
+médailles olympiques par pays et de consulter les résultats d’un pays par
+édition.
 
 ## 2. Organisation du projet
 
-Le code de l'application est organisé dans le dossier `src/app/`.
+| Emplacement | Responsabilité |
+|---|---|
+| `src/app/pages/` | Pages du tableau de bord, du détail pays et de la page introuvable. |
+| `src/app/components/` | En-tête, cartes d’indicateurs et graphiques réutilisables. |
+| `src/app/services/data.service.ts` | Chargement des données olympiques avec `HttpClient`. |
+| `src/app/models/` | Interfaces `Olympic` et `Participation`. |
+| `src/app/app-routing.module.ts` | Déclaration des routes de l’application. |
+| `src/assets/mock/olympic.json` | Source de données de l’application. |
 
-### Pages (`pages/`)
+`HeaderComponent` reçoit un titre et une liste d’indicateurs via `@Input()`.
+Il utilise `StatsCardComponent` pour afficher le libellé et la valeur de
+chaque indicateur. L’accueil lui transmet deux indicateurs et le détail pays
+lui en transmet trois.
 
-* `HomeComponent` : affiche le tableau de bord et prépare les données du graphique circulaire.
-* `CountryComponent` : affiche les statistiques et l'évolution des médailles d'un pays.
-* `NotFoundComponent` : gère les routes inexistantes et les pays introuvables.
+`MedalChartComponent` reçoit le type du graphique, les libellés et les
+valeurs à tracer avec Chart.js. Il détruit l’instance du graphique lors
+de son remplacement et à la destruction du composant.
 
-### Composants réutilisables (`components/`)
+## 3. Circulation des données et navigation
 
-* `StatsCardComponent` : affiche une statistique à partir de deux propriétés d'entrée (`label` et `value`).
-* `MedalChartComponent` : affiche un graphique circulaire ou linéaire avec Chart.js. Il reçoit les données par des propriétés d'entrée et émet un événement lorsqu'un pays est sélectionné.
+1. La page appelle `DataService.getOlympics()`. Le service lit le fichier
+   JSON avec `HttpClient` et retourne un `Observable<Olympic[]>`.
+2. `HomeComponent` compte les pays et les années olympiques distinctes.
+   Il additionne les médailles des différentes participations pour obtenir
+   le total par pays.
+3. Au clic sur une part du camembert, `MedalChartComponent` émet le nom du
+   pays via `@Output()`. `HomeComponent` retrouve son identifiant et ouvre
+   `/country/:id`. La liste sous le graphique fournit des liens vers les
+   mêmes pages, utilisables au clavier.
+4. `CountryComponent` combine le paramètre de route et les données avec
+   `combineLatest`. Il retrouve le pays par son identifiant, puis prépare
+   les indicateurs et la série des médailles par édition. L’abonnement est
+   libéré lorsque le composant est détruit.
 
-### Service (`services/`)
+Le lien « Go back » ramène à l’accueil. Si la liste chargée contient des
+pays mais qu’aucun ne correspond à l’identifiant demandé, la page détail
+redirige vers `/not-found`. La route générique `**` affiche également
+`NotFoundComponent` pour les URL inconnues.
 
-* `DataService` : centralise les appels HTTP et récupère les données olympiques depuis le fichier JSON.
+## 4. États d’affichage
 
-### Modèles (`models/`)
+L’accueil et le détail utilisent `loadState` pour choisir le contenu affiché.
 
-* `Olympic` : définit la structure des données d'un pays.
-* `Participation` : définit les informations relatives à une participation aux Jeux olympiques.
+| État | Contenu affiché |
+|---|---|
+| `loading` | Message pendant la récupération des données. |
+| `ready` | Indicateurs, graphique et liste des valeurs. |
+| `empty` | Message si la liste des pays est vide ou, sur le détail, si le pays ne possède aucune participation. |
+| `error` | Message si la requête de chargement échoue. |
 
-## 3. Circulation des données
+Sur le détail, le lien de retour reste disponible dans chacun de ces états.
 
-Le fichier `src/assets/mock/olympic.json` constitue actuellement la source de données.
+## 5. Affichage responsive et accès aux données
 
-Le fonctionnement est le suivant :
+Le CSS dimensionne le cadre du graphique. Chart.js redimensionne le canvas
+pour suivre ce cadre. Le camembert utilise un cadre carré, tandis que la
+courbe utilise un cadre plus large que haut.
 
-1. Une page appelle `DataService.getOlympics()`.
-2. Le service utilise `HttpClient` pour récupérer les données JSON.
-3. La page reçoit les données typées `Olympic[]`.
-4. La page calcule les statistiques nécessaires à son affichage.
-5. Les composants réutilisables reçoivent les données à afficher grâce à `@Input()`.
-6. Le graphique circulaire utilise `@Output()` pour transmettre le pays sélectionné à `HomeComponent`, qui déclenche la navigation.
-
-Cette organisation sépare l'accès aux données, la logique des pages et leur présentation.
-
-## 4. Choix techniques
-
-* **Angular** : framework utilisé pour construire l'application et organiser les composants.
-* **TypeScript** : langage permettant de typer les données et de fiabiliser le code.
-* **RxJS** : bibliothèque utilisée pour gérer les données asynchrones retournées par les appels HTTP.
-* **Chart.js** : bibliothèque utilisée pour afficher les graphiques.
-* **Angular Router** : système de navigation entre le tableau de bord et les pages des pays.
-* **SCSS** : langage utilisé pour organiser les styles.
-
-## 5. Principes de maintenabilité
-
-Le refactoring repose sur plusieurs principes :
-
-* **Séparation des responsabilités** : chaque composant possède un rôle clairement défini.
-* **Réutilisabilité** : les statistiques et les graphiques utilisent des composants communs.
-* **Typage explicite** : les interfaces `Olympic` et `Participation` remplacent les types `any`.
-* **Centralisation des accès aux données** : les appels HTTP sont regroupés dans `DataService`.
-* **Lisibilité** : les calculs sont simplifiés et les conversions inutiles supprimées.
-* **Gestion des ressources** : les graphiques Chart.js sont détruits lors de leur remplacement ou de la destruction du composant.
+Les valeurs des deux graphiques sont également affichées sous forme de
+listes. Sur le tableau de bord, chaque élément indique le total de médailles
+et donne accès au détail du pays. Sur le détail, chaque élément associe une
+année au nombre de médailles obtenu.
 
 ## 6. Évolutions possibles
 
-L'architecture permet d'envisager plusieurs améliorations :
-
-* Remplacer le fichier JSON par une API REST développée avec Java et Spring Boot.
-* Ajouter des indicateurs de chargement et des messages d'erreur visibles.
-* Améliorer la gestion des données absentes ou invalides.
-* Ajouter des tests unitaires pour les services et les composants.
-* Renforcer l'accessibilité et l'adaptation aux différentes tailles d'écran.
-
-## Conclusion
-
-Le refactoring de TéléSport améliore la lisibilité, la réutilisabilité et la maintenabilité de l'application.
-
-La séparation entre les pages, les composants réutilisables, les modèles et le service de données facilite les futures évolutions du projet.
+- Remplacer le fichier JSON par une API REST Java et Spring Boot.
+- Compléter les tests automatisés du service et des composants.

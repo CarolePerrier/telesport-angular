@@ -1,29 +1,66 @@
-# OlympicGamesStarter
+# TéléSport · Statistiques olympiques
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 18.0.6.
+TéléSport est une application Angular qui permet de comparer les totaux de
+médailles olympiques par pays et de consulter les résultats d’un pays par
+édition.
 
-Don't forget to install your node_modules before starting (`npm install`).
+## Fonctionnalités
 
-## Development server
+- **Accueil (`/`)** — nombre de pays, nombre d’éditions et camembert des
+  médailles par pays. Un clic sur une part ou sur un lien dans la liste
+  ouvre le détail du pays.
+- **Détail (`/country/:id`)** — nombre de participations, total des médailles
+  et des athlètes, courbe des médailles par édition et lien de retour à
+  l’accueil. Exemple pour la France avec `/country/5`.
+- **Gestion des erreurs** — page dédiée aux URL et aux pays introuvables,
+  messages de chargement, de données vides et d’échec de la requête.
+- **Accessibilité et responsive** — données des graphiques disponibles en
+  texte, liens utilisables au clavier et mise en page adaptée aux écrans
+  d’ordinateur, de tablette et de mobile.
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+## Prérequis et lancement
 
-## Build
+Node.js et npm doivent être installés. Les dépendances du projet, dont Angular
+CLI et Chart.js, sont installées avec npm.
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+À la racine du projet, lancez les commandes suivantes.
 
-## Where to start
+```bash
+npm ci
+npx ng serve
+```
 
-As you can see, an architecture has already been defined for the project. It is just a suggestion, you can choose to use your own. The predefined architecture includes (in addition to the default angular architecture) the following:
+Ouvrez ensuite [http://localhost:4200/](http://localhost:4200/).
 
-- `components` folder: contains every reusable components
-- `pages` folder: contains components used for routing
-- `core` folder: contains the business logic (`services` and `models` folders)
+## Compilation
 
-I suggest you to start by understanding this starter code. Pay an extra attention to the `app-routing.module.ts` and the `olympic.service.ts`.
+```bash
+npm run build
+```
 
-Once mastered, you should continue by creating the typescript interfaces inside the `models` folder. As you can see I already created two files corresponding to the data included inside the `olympic.json`. With your interfaces, improve the code by replacing every `any` by the corresponding interface.
+Les fichiers générés se trouvent dans `dist/`.
 
-You're now ready to implement the requested features.
+## Structure du projet
 
-Good luck!
+| Emplacement | Rôle |
+|---|---|
+| `src/app/pages/` | Accueil, détail pays et page introuvable |
+| `src/app/components/` | En-tête, cartes d’indicateurs et graphiques réutilisables |
+| `src/app/services/data.service.ts` | Chargement du fichier JSON via `HttpClient` |
+| `src/app/models/` | Interfaces TypeScript des données olympiques |
+| `src/app/app-routing.module.ts` | Déclaration des routes Angular |
+| `src/assets/mock/olympic.json` | Données utilisées par l’application |
+
+## Choix techniques
+
+Les pages préparent les indicateurs et les séries à afficher. L’en-tête
+partagé reçoit le titre et les indicateurs, tandis que le composant graphique
+reçoit les libellés et les valeurs à tracer avec Chart.js. Le détail utilise
+l’identifiant du pays fourni dans l’URL pour retrouver ses données.
+
+Pour aller plus loin, voir [ARCHITECTURE.md](./ARCHITECTURE.md).
+
+## Captures d’écran
+
+Le livrable `telesport-captures.zip` contient les quatre captures de
+l’accueil et du détail France, sur ordinateur et sur mobile.
