@@ -1,4 +1,3 @@
-import {HttpErrorResponse} from '@angular/common/http';
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import { DataService } from '../../services/data.service';
@@ -15,7 +14,7 @@ export class CountryComponent implements OnInit, OnDestroy {
   public totalEntries: number = 0;
   public totalMedals: number = 0;
   public totalAthletes: number = 0;
-  public error!: string;
+  public loadState: 'loading' | 'ready' | 'empty' | 'error' = 'loading';
   public years: string[] = [];
   public medals: number[] = [];
   private routeSubscription?: Subscription;
@@ -28,6 +27,10 @@ constructor(private route: ActivatedRoute, private router: Router, private dataS
     this.dataService.getOlympics()
   ]).subscribe({
     next: ([params, countries]) => {
+      if (!countries?.length) {
+        this.loadState = 'empty';
+        return;
+      }
       const id = params.get('id');
       const selectedCountry = countries.find(
         country => String(country.id) === id
@@ -39,6 +42,10 @@ constructor(private route: ActivatedRoute, private router: Router, private dataS
       }
 
       const participations = selectedCountry.participations;
+      if (!participations.length) {
+        this.loadState = 'empty';
+        return;
+      }
       this.titlePage = selectedCountry.country;
       this.totalEntries = participations.length;
       this.years = participations.map(participation => String(participation.year));
@@ -48,9 +55,10 @@ constructor(private route: ActivatedRoute, private router: Router, private dataS
         (total, participation) => total + participation.athleteCount,
         0
       );
+      this.loadState = 'ready';
     },
-    error: (error: HttpErrorResponse) => {
-      this.error = error.message;
+    error: () => {
+      this.loadState = 'error';
     }
   });
 }
