@@ -1,0 +1,13 @@
+<header>
+  <div class="center">
+    <div>{{ title }}</div>
+  </div>
+
+  <div class="split">
+    <app-stats-card
+      *ngFor="let indicator of indicators"
+      [label]="indicator.label"
+      [value]="indicator.value">
+    </app-stats-card>
+  </div>
+</header>
