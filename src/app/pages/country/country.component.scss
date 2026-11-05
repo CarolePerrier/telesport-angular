@@ -17,3 +17,9 @@
         width: 100%;
     }
 }
+
+.wrapper-container > .container {
+  width: 100%;
+  max-width: 960px;
+  min-width: 0;
+}

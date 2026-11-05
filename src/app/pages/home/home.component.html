@@ -10,10 +10,18 @@
     ]">
   </app-header>
 
+<p class="dashboard-intro">
+  Explore Olympic medal totals by country. Select a slice to see how that
+  country's results changed across editions.
+</p>
+
+<div class="dashboard-chart">
   <app-medal-chart
     type="pie"
     [labels]="countries"
     [values]="medals"
     (countrySelected)="onCountrySelected($event)">
   </app-medal-chart>
+</div>
+
 </div>

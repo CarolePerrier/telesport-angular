@@ -44,7 +44,8 @@ export class MedalChartComponent implements AfterViewInit, OnChanges, OnDestroy 
         }]
       },
       options: {
-        aspectRatio: 2.5,
+        responsive: true,
+        maintainAspectRatio: false,
         onClick: (event) => {
           if (this.type !== 'pie' || !this.chart || !event.native) return;
 
