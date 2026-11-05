@@ -1,27 +1,42 @@
 <h2>Olympic games app</h2>
 <hr />
 
-<div>
-  <app-header
-    [title]="titlePage"
-    [indicators]="[
-      { label: 'Number of countries', value: totalCountries },
-      { label: 'Number of JOs', value: totalJOs }
-    ]">
-  </app-header>
+@switch (loadState) {
+  @case ('loading') {
+    <p class="dashboard-intro" role="status">Loading Olympic data…</p>
+  }
 
-<p class="dashboard-intro">
-  Explore Olympic medal totals by country. Select a slice to see how that
-  country's results changed across editions.
-</p>
+  @case ('empty') {
+    <p class="dashboard-intro" role="status">No Olympic data available.</p>
+  }
 
-<div class="dashboard-chart">
-  <app-medal-chart
-    type="pie"
-    [labels]="countries"
-    [values]="medals"
-    (countrySelected)="onCountrySelected($event)">
-  </app-medal-chart>
-</div>
+  @case ('error') {
+    <p class="dashboard-intro" role="alert">
+      Olympic data could not be loaded. Please refresh the page to try again.
+    </p>
+  }
 
-</div>
+  @case ('ready') {
+    <app-header
+      [title]="titlePage"
+      [indicators]="[
+        { label: 'Number of countries', value: totalCountries },
+        { label: 'Number of JOs', value: totalJOs }
+      ]">
+    </app-header>
+
+    <p class="dashboard-intro">
+      Explore Olympic medal totals by country. Select a slice to see how that
+      country's results changed across editions.
+    </p>
+
+    <div class="dashboard-chart">
+      <app-medal-chart
+        type="pie"
+        [labels]="countries"
+        [values]="medals"
+        (countrySelected)="onCountrySelected($event)">
+      </app-medal-chart>
+    </div>
+  }
+}
