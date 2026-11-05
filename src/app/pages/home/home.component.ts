@@ -2,6 +2,7 @@ import {HttpErrorResponse} from '@angular/common/http';
 import {Component, OnInit} from '@angular/core';
 import { Router } from '@angular/router';
 import { DataService } from '../../services/data.service';
+import { Olympic } from '../../models/olympic.model';
 
 @Component({
   selector: 'app-home',
@@ -15,6 +16,7 @@ export class HomeComponent implements OnInit {
   public titlePage: string = "Medals per Country";
   public countries: string[] = [];
   public medals: number[] = [];
+  private olympics: Olympic[] = [];
 
   constructor(private router: Router, private dataService: DataService) { }
 
@@ -26,6 +28,7 @@ export class HomeComponent implements OnInit {
           this.totalCountries = data.length;
           this.countries = data.map(country => country.country);
           this.medals = data.map(country => country.participations.reduce((total, p) => total + p.medalsCount, 0));
+          this.olympics = data;
         }
       },
       (error:HttpErrorResponse) => {
@@ -34,8 +37,13 @@ export class HomeComponent implements OnInit {
     )
   }
 
-  onCountrySelected(country: string): void {
-    this.router.navigate(['country', country]);
+  onCountrySelected(countryName: string): void {
+    const selectedCountry = this.olympics.find(
+      country => country.country === countryName
+    );
+    if (selectedCountry) {
+      this.router.navigate(['/country', selectedCountry.id]);
+    }
   }
 
 }
