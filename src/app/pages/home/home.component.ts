@@ -15,7 +15,7 @@ export class HomeComponent implements OnInit {
   public titlePage: string = "Medals per Country";
   public countries: string[] = [];
   public medals: number[] = [];
-  private olympics: Olympic[] = [];
+  protected olympics: Olympic[] = [];
 
   constructor(private router: Router, private dataService: DataService) { }
 

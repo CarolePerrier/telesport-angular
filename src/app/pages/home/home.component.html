@@ -38,5 +38,18 @@
         (countrySelected)="onCountrySelected($event)">
       </app-medal-chart>
     </div>
+
+    <section class="dashboard-chart">
+      <h2>Medal totals by country</h2>
+      <ul>
+        @for (country of olympics; track country.id; let index = $index) {
+          <li>
+            <a [routerLink]="['/country', country.id]">
+              {{ country.country }} ({{ medals[index] }} medals)
+            </a>
+          </li>
+        }
+      </ul>
+    </section>
   }
 }

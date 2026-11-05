@@ -32,6 +32,14 @@
             [values]="medals">
           </app-medal-chart>
           <h2>Date</h2>
+          <section>
+            <h3>Medals by edition</h3>
+            <ul>
+              @for (year of years; track $index; let index = $index) {
+                <li>{{ year }}: {{ medals[index] }} medals</li>
+              }
+            </ul>
+          </section>
         </div>
       </div>
     }
