@@ -26,30 +26,31 @@
     </app-header>
 
     <p class="dashboard-intro">
-      Explore Olympic medal totals by country. Select a slice to see how that
-      country's results changed across editions.
+      Select a slice or a country link to see its results.
     </p>
 
-    <div class="dashboard-chart">
-      <app-medal-chart
-        type="pie"
-        [labels]="countries"
-        [values]="medals"
-        (countrySelected)="onCountrySelected($event)">
-      </app-medal-chart>
+    <div class="dashboard-content">
+      <div class="dashboard-chart">
+        <app-medal-chart
+          type="pie"
+          [labels]="countries"
+          [values]="medals"
+          (countrySelected)="onCountrySelected($event)">
+        </app-medal-chart>
+      </div>
+      <section class="dashboard-totals">
+        <h2>Medal totals by country</h2>
+        <ul>
+          @for (country of olympics; track country.id; let index = $index) {
+            <li>
+              <a [routerLink]="['/country', country.id]">
+                {{ country.country }} ({{ medals[index] }} medals)
+              </a>
+            </li>
+          }
+        </ul>
+      </section>
     </div>
 
-    <section class="dashboard-chart">
-      <h2>Medal totals by country</h2>
-      <ul>
-        @for (country of olympics; track country.id; let index = $index) {
-          <li>
-            <a [routerLink]="['/country', country.id]">
-              {{ country.country }} ({{ medals[index] }} medals)
-            </a>
-          </li>
-        }
-      </ul>
-    </section>
   }
 }

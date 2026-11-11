@@ -1,4 +1,8 @@
 <div>
+  <div class="country-back">
+    <a routerLink="/">Go back</a>
+  </div>
+
   @switch (loadState) {
     @case ('loading') {
       <p role="status">Loading Olympic data…</p>
@@ -24,28 +28,24 @@
         ]">
       </app-header>
 
-      <div class="chart-container wrapper-container">
-        <div class="container">
+      <div class="country-content">
+        <div class="country-chart">
           <app-medal-chart
             type="line"
             [labels]="years"
             [values]="medals">
           </app-medal-chart>
-          <h2>Date</h2>
-          <section>
-            <h3>Medals by edition</h3>
-            <ul>
-              @for (year of years; track $index; let index = $index) {
-                <li>{{ year }}: {{ medals[index] }} medals</li>
-              }
-            </ul>
-          </section>
         </div>
+
+        <section class="country-editions">
+          <h2>Medals by edition</h2>
+          <ul>
+            @for (year of years; track $index; let index = $index) {
+              <li>{{ year }}: {{ medals[index] }} medals</li>
+            }
+          </ul>
+        </section>
       </div>
     }
   }
-
-  <div class="center">
-    <a routerLink="/">Go back</a>
-  </div>
 </div>

@@ -1,25 +1,35 @@
-
-.wrapper-container {
-    display: flex;
-    justify-content: center;
+.country-back,
+.country-content {
+  width: calc(100% - 2rem);
+  max-width: 880px;
+  margin: 0.75rem auto;
 }
 
-.container {
-    width: 50%;
-    h2{
-        text-align: center;
-        color: gray;
-    }
+.country-content {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+  align-items: center;
+  gap: 1rem;
 }
 
-@media screen and (max-width: 1000px) {
-    .container {
-        width: 100%;
-    }
+.country-chart {
+  width: min(100%, 560px, 75svh);
+  justify-self: center;
 }
 
-.wrapper-container > .container {
-  width: 100%;
-  max-width: 960px;
-  min-width: 0;
+.country-editions h2 {
+  margin: 0 0 0.5rem;
+  font-size: 1.2rem;
+}
+
+.country-editions ul {
+  margin: 0;
+  padding-inline-start: 1.25rem;
+}
+
+@media (max-width: 600px) {
+  .country-content {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.5rem;
+  }
 }
