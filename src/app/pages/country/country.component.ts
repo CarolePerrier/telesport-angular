@@ -50,7 +50,7 @@ constructor(private route: ActivatedRoute, private router: Router, private dataS
       this.totalEntries = participations.length;
       this.years = participations.map(participation => String(participation.year));
       this.medals = participations.map(participation => participation.medalsCount);
-      this.totalMedals = this.medals.reduce((total, count) => total + count, 0);
+      this.totalMedals = this.dataService.getTotalMedals(selectedCountry);
       this.totalAthletes = participations.reduce(
         (total, participation) => total + participation.athleteCount,
         0

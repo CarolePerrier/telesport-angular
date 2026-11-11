@@ -14,4 +14,9 @@ export class DataService {
     getOlympics(): Observable<Olympic[]> {
       return this.http.get<Olympic[]>(this.olympicUrl);
     }
+    getTotalMedals(country: Olympic): number {
+      return country.participations.reduce(
+        (total, participation) => total + participation.medalsCount, 0
+      );
+    }
 }

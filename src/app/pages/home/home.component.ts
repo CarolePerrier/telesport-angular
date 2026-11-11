@@ -35,14 +35,8 @@ export class HomeComponent implements OnInit {
           )
         ).size;
         this.countries = data.map(country => country.country);
-        this.medals = data.map(country =>
-          country.participations.reduce(
-            (total, participation) => total + participation.medalsCount,
-            0
-          )
-        );
-
-      this.loadState = 'ready';
+        this.medals = data.map(country => this.dataService.getTotalMedals(country));
+        this.loadState = 'ready';
       },
       error: () => {
         this.loadState = 'error';
