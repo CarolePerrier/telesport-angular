@@ -2,6 +2,7 @@ import {Component, OnDestroy, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import { DataService } from '../../services/data.service';
 import { combineLatest, Subscription } from 'rxjs';
+import { Olympic } from '../../models/olympic.model';
 
 
 @Component({
@@ -9,6 +10,7 @@ import { combineLatest, Subscription } from 'rxjs';
   templateUrl: './country.component.html',
   styleUrls: ['./country.component.scss']
 })
+
 export class CountryComponent implements OnInit, OnDestroy {
   public titlePage: string = '';
   public totalEntries: number = 0;
@@ -41,20 +43,12 @@ constructor(private route: ActivatedRoute, private router: Router, private dataS
         return;
       }
 
-      const participations = selectedCountry.participations;
-      if (!participations.length) {
+      if (!selectedCountry.participations.length) {
         this.loadState = 'empty';
         return;
       }
-      this.titlePage = selectedCountry.country;
-      this.totalEntries = participations.length;
-      this.years = participations.map(participation => String(participation.year));
-      this.medals = participations.map(participation => participation.medalsCount);
-      this.totalMedals = this.dataService.getTotalMedals(selectedCountry);
-      this.totalAthletes = participations.reduce(
-        (total, participation) => total + participation.athleteCount,
-        0
-      );
+
+      this.setCountryDetails(selectedCountry);
       this.loadState = 'ready';
     },
     error: () => {
@@ -65,6 +59,20 @@ constructor(private route: ActivatedRoute, private router: Router, private dataS
 
 ngOnDestroy(): void {
   this.routeSubscription?.unsubscribe();
+}
+
+private setCountryDetails(country: Olympic): void {
+  const { participations } = country;
+
+  this.titlePage = country.country;
+  this.totalEntries = participations.length;
+  this.totalMedals = this.dataService.getTotalMedals(country);
+  this.totalAthletes = participations.reduce(
+    (total, participation) => total + participation.athleteCount,
+    0
+  );
+  this.years = participations.map(participation => String(participation.year));
+  this.medals = participations.map(participation => participation.medalsCount);
 }
 
 }
