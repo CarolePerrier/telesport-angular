@@ -33,10 +33,10 @@ de son remplacement et à la destruction du composant.
 2. `HomeComponent` compte les pays et les années olympiques distinctes.
    Il additionne les médailles des différentes participations pour obtenir
    le total par pays.
-3. Au clic sur une part du camembert, `MedalChartComponent` émet le nom du
-   pays via `@Output()`. `HomeComponent` retrouve son identifiant et ouvre
-   `/country/:id`. La liste sous le graphique fournit des liens vers les
-   mêmes pages, utilisables au clavier.
+3. Au clic sur une part du camembert, `MedalChartComponent` émet son index
+   via `sliceSelected`. `HomeComponent` retrouve le pays à cette position,
+   puis utilise son identifiant pour ouvrir `/country/:id`. La liste fournit
+   également des liens vers les mêmes pages, utilisables au clavier.
 4. `CountryComponent` combine le paramètre de route et les données avec
    `combineLatest`. Il retrouve le pays par son identifiant, puis prépare
    les indicateurs et la série des médailles par édition. L’abonnement est
