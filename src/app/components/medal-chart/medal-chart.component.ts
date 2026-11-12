@@ -6,13 +6,14 @@ import Chart from 'chart.js/auto';
   templateUrl: './medal-chart.component.html',
   styleUrls: ['./medal-chart.component.scss']
 })
+
 export class MedalChartComponent implements AfterViewInit, OnChanges, OnDestroy {
 
   @Input() type: 'pie' | 'line' = 'pie';
   @Input() labels: string[] = [];
   @Input() values: number[] = [];
 
-  @Output() countrySelected = new EventEmitter<string>();
+  @Output() sliceSelected = new EventEmitter<number>();
 
   @ViewChild('chartCanvas') chartCanvas!: ElementRef<HTMLCanvasElement>;
 
@@ -27,6 +28,7 @@ export class MedalChartComponent implements AfterViewInit, OnChanges, OnDestroy 
   }
 
   private updateChart(): void {
+
     if (!this.chartCanvas || this.labels.length === 0) return;
 
     this.chart?.destroy();
@@ -48,23 +50,18 @@ export class MedalChartComponent implements AfterViewInit, OnChanges, OnDestroy 
         maintainAspectRatio: false,
         onClick: (event) => {
           if (this.type !== 'pie' || !this.chart || !event.native) return;
-
           const points = this.chart.getElementsAtEventForMode(
             event.native,
             'point',
             { intersect: true },
             true
           );
-
           if (points.length > 0) {
-            const country = this.labels[points[0].index];
-
-            if (country) {
-              this.countrySelected.emit(country);
-            }
+            this.sliceSelected.emit(points[0].index);
           }
-        }
+        },
       },
+
     });
   }
 
@@ -72,3 +69,4 @@ export class MedalChartComponent implements AfterViewInit, OnChanges, OnDestroy 
     this.chart?.destroy();
   }
 }
+

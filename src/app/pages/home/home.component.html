@@ -35,7 +35,7 @@
           type="pie"
           [labels]="countries"
           [values]="medals"
-          (countrySelected)="onCountrySelected($event)">
+          (sliceSelected)="onSliceSelected($event)">
         </app-medal-chart>
       </div>
       <section class="dashboard-totals">

@@ -44,12 +44,11 @@ export class HomeComponent implements OnInit {
     });
   }
 
-  onCountrySelected(countryName: string): void {
-    const selectedCountry = this.olympics.find(
-      country => country.country === countryName
-    );
-    if (selectedCountry) {
-      this.router.navigate(['/country', selectedCountry.id]);
+  onSliceSelected(index: number): void {
+    const country = this.olympics[index];
+
+    if (country) {
+      this.router.navigate(['/country', country.id]);
     }
   }
 
