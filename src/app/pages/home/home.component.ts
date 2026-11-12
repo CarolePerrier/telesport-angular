@@ -26,16 +26,7 @@ export class HomeComponent implements OnInit {
           this.loadState = 'empty';
           return;
         } 
-
-        this.olympics = data;
-        this.totalCountries = data.length;
-        this.totalJOs = new Set(
-          data.flatMap(country =>
-            country.participations.map(participation => participation.year)
-          )
-        ).size;
-        this.countries = data.map(country => country.country);
-        this.medals = data.map(country => this.dataService.getTotalMedals(country));
+        this.setDashboardDetails(data);
         this.loadState = 'ready';
       },
       error: () => {
@@ -46,11 +37,22 @@ export class HomeComponent implements OnInit {
 
   onSliceSelected(index: number): void {
     const country = this.olympics[index];
-
     if (country) {
       this.router.navigate(['/country', country.id]);
     }
   }
 
+  private setDashboardDetails(olympics: Olympic[]): void {
+    this.olympics = olympics;
+    this.totalCountries = olympics.length;
+    const editionYears = new Set(
+    olympics.flatMap(country =>
+      country.participations.map(participation => participation.year)
+    )
+    );
+    this.totalJOs = editionYears.size;
+    this.countries = olympics.map(country => country.country);
+    this.medals = olympics.map(country => this.dataService.getTotalMedals(country));
+  }
 }
 
